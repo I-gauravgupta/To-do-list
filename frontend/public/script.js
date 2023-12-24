@@ -1,0 +1,45 @@
+const inputBox=document.getElementById("input-box");
+
+const listContainer = document.getElementById("list-container");
+
+function showdata(){
+  listContainer.innerHTML="";
+  fetch('http://localhost:8080/')
+  .then(response => {
+    if (!response.ok) { throw new Error('Network response was not ok')  }
+    return response.json(); // Parse the JSON data
+  })
+  .then(data => { for( var i=0;i<data.length ; i++){
+        let li=document.createElement("li");
+        li.innerHTML=data[i].task;
+        listContainer.appendChild(li);
+  }})
+  .catch(error => {
+    console.error('There was a problem fetching the data:', error);
+  });
+}
+showdata();
+function addTask() {
+  if (inputBox.value === '') {
+    alert("You must write something!");
+  } else {
+    fetch('http://localhost:8080/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ add_task: inputBox.value }) // Stringify the JSON object
+    })
+
+  }
+  showdata();
+}
+listContainer.addEventListener("click",function(e){
+  if(e.target.tagName==="LI"){
+      e.target.classList.toggle("checked");
+  }
+  else if(e.target.tagName==="SPAN"){
+      e.target.parentElement.remove();
+  }
+},false);
+
