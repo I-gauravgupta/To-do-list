@@ -13,6 +13,10 @@ function showdata(){
         let li=document.createElement("li");
         li.innerHTML=data[i].task;
         listContainer.appendChild(li);
+        let span=document.createElement("span");
+        span.setAttribute("id", data[i].task);
+        span.innerHTML="\u00d7";
+        li.appendChild(span);
   }})
   .catch(error => {
     console.error('There was a problem fetching the data:', error);
@@ -39,7 +43,19 @@ listContainer.addEventListener("click",function(e){
       e.target.classList.toggle("checked");
   }
   else if(e.target.tagName==="SPAN"){
-      e.target.parentElement.remove();
+      tasktodelete=e.target.id;
+      console.log(tasktodelete);
+      deleteTask(tasktodelete);
   }
 },false);
 
+async function deleteTask(taskToDelete) {
+const response = await fetch(`http://localhost:8080/delete/${taskToDelete}`, {
+  method: 'DELETE',
+  headers: {
+    'Content-Type': 'application/json'
+
+  }
+})
+showdata();
+}
